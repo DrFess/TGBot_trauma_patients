@@ -2,12 +2,12 @@ import os
 
 from aiogram import Router
 from aiogram.filters import Text
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import Message, ReplyKeyboardRemove, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
 from bot import bot
-from keyboards.buttons import choose_doctors
+from keyboards.buttons import choose_doctors, image_answers
 
 
 router = Router()
@@ -47,16 +47,45 @@ async def send_image(message: Message, state: FSMContext):
             await bot.send_photo(
                 chat_id=os.getenv('GROUP_ID'),
                 photo=message.photo[-1].file_id,
-                caption=f'{data["doctor"]}, Вам сообщение от {message.from_user.username}\nПациент: {data["patient"]}'
+                caption=f'{data["doctor"]}, Вам сообщение от {message.from_user.username}\nПациент: {data["patient"]}',
+                reply_markup=image_answers(message.from_user.id).as_markup()
             )
         else:
             await bot.send_photo(
                 chat_id=os.getenv('GROUP_ID'),
                 photo=message.photo[-1].file_id,
-                caption=f'Доктора, вам сообщение от {message.from_user.username}\nПациент: {data["patient"]}'
+                caption=f'Доктора, вам сообщение от {message.from_user.username}\nПациент: {data["patient"]}',
+                reply_markup=image_answers(message.from_user.id).as_markup()
             )
         await message.reply('Ваше сообщение переслано')
         await state.clear()
     else:
         await message.answer('Возникла ошибка. Попробуем снова?')
         await state.set_state(Steps.start)
+
+
+@router.callback_query(Text(startswith='answer_1'))
+async def answer_1(callback: CallbackQuery):
+    user_id = callback.data.split(':')[1]
+    await bot.send_message(user_id, text='На контрольных рентгенограммах наблюдается достаточная '
+                                         'консолидация(сращение перелома), поэтому возможно удаление металлоконструкции'
+                                         'в плановом порядке\nЗапись на плановую госпитализацию проводится по телефону '
+                                         '83952218974 по понедельникам с 13.00 до 14.00.')
+    await callback.message.answer('Ответ отправлен')
+
+
+@router.callback_query(Text(startswith='answer_2'))
+async def answer_2(callback: CallbackQuery):
+    user_id = callback.data.split(':')[1]
+    await bot.send_message(user_id, text='На контрольных рентгенограммах наблюдается НЕдостаточная '
+                                         'консолидация(сращение перелома). Необходимо повторить контрольные '
+                                         'рентгенограммы через 1 месяц')
+    await callback.message.answer('Ответ отправлен')
+
+
+@router.callback_query(Text(startswith='answer_3'))
+async def answer_3(callback: CallbackQuery):
+    user_id = callback.data.split(':')[1]
+    await bot.send_message(user_id, text='Необходимо уточнить некоторые детали. Перезвоните по телефону 83952218974 '
+                                         'в рабочие дни с 14.00 до 15.00')
+    await callback.message.answer('Ответ отправлен')

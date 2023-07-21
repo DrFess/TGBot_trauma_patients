@@ -1,4 +1,14 @@
-from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardButton
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+
+
+def image_answers(user_id):
+    builder = InlineKeyboardBuilder()
+    builder.row(InlineKeyboardButton(text='На плановую госпитализацию', callback_data=f'answer_1:{user_id}'))
+    builder.row(InlineKeyboardButton(text='Повторить снимок через 1 месяц', callback_data=f'answer_2:{user_id}'))
+    builder.row(InlineKeyboardButton(text='Свяжитесь с нами', callback_data=f'answer_3:{user_id}'))
+    return builder
+
 
 menu_buttons = [
     [KeyboardButton(text='Отправить рентгенологические снимки')],
