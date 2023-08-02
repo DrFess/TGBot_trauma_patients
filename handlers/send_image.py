@@ -71,7 +71,8 @@ async def answer_1(callback: CallbackQuery):
                                          'консолидация(сращение перелома), поэтому возможно удаление металлоконструкции'
                                          'в плановом порядке\nЗапись на плановую госпитализацию проводится по телефону '
                                          '83952218974 по понедельникам с 13.00 до 14.00.')
-    await callback.message.answer('Ответ отправлен')
+    await callback.message.answer('Отправлен ответ, что консолидация достаточная и возможна плановая госпитализация'
+                                  '(вариант 1)')
 
 
 @router.callback_query(Text(startswith='answer_2'))
@@ -80,7 +81,7 @@ async def answer_2(callback: CallbackQuery):
     await bot.send_message(user_id, text='На контрольных рентгенограммах наблюдается НЕдостаточная '
                                          'консолидация(сращение перелома). Необходимо повторить контрольные '
                                          'рентгенограммы через 1 месяц')
-    await callback.message.answer('Ответ отправлен')
+    await callback.message.answer('Отправлен ответ, что необходимо повторить снимки через 1 месяц (вариант 2)')
 
 
 @router.callback_query(Text(startswith='answer_3'))
@@ -88,4 +89,4 @@ async def answer_3(callback: CallbackQuery):
     user_id = callback.data.split(':')[1]
     await bot.send_message(user_id, text='Необходимо уточнить некоторые детали. Перезвоните по телефону 83952218974 '
                                          'в рабочие дни с 14.00 до 15.00')
-    await callback.message.answer('Ответ отправлен')
+    await callback.message.answer('Отправлен ответ, что необходимо перезвонить (вариант 3)')
