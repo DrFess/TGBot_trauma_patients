@@ -7,8 +7,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
 from bot import bot
-from keyboards.buttons import choose_doctors, image_answers
-
+from keyboards.buttons import choose_doctors, image_answers, get_personal_account
 
 router = Router()
 
@@ -70,7 +69,9 @@ async def answer_1(callback: CallbackQuery):
     await bot.send_message(user_id, text='На контрольных рентгенограммах наблюдается достаточная '
                                          'консолидация(сращение перелома), поэтому возможно удаление металлоконструкции'
                                          'в плановом порядке\nЗапись на плановую госпитализацию проводится по телефону '
-                                         '83952218974 по понедельникам с 13.00 до 14.00.')
+                                         '83952218974 по понедельникам с 13.00 до 14.00.\nТакже можно оставить заявку на'
+                                         'плановую госпитализацию в личном кабинете портала ОГАУЗ ГИМДКБ',
+                           reply_markup=get_personal_account().as_markup())
     await callback.message.answer('Отправлен ответ, что консолидация достаточная и возможна плановая госпитализация'
                                   '(вариант 1)')
 

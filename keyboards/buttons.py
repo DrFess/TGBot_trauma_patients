@@ -10,6 +10,12 @@ def image_answers(user_id):
     return builder
 
 
+def get_personal_account():
+    builder = InlineKeyboardBuilder()
+    builder.row(InlineKeyboardButton(text='Личный кабинет пациента ИМДКБ', url='https://imdkb.mzio.ru/'))
+    return builder
+
+
 menu_buttons = [
     [KeyboardButton(text='Отправить рентгенологические снимки')],
     [KeyboardButton(text='Получить список анализов для плановой госпитализации')],
