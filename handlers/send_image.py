@@ -21,12 +21,14 @@ class Steps(StatesGroup):
 @router.message(Text(text='Отправить рентгенологические снимки'))
 async def send_surname_name(message: Message, state: FSMContext):
     await state.set_state(Steps.start)
-    await message.answer('Отправьте фамилию и имя пациента', reply_markup=ReplyKeyboardRemove())
+    await message.answer('Укажите сколько прошло времени с момента операции (в месяцах) или дату операции.'
+                         '\nЕсли операции не было, укажите "без операции"',
+                         reply_markup=ReplyKeyboardRemove())
 
 
 @router.message(Steps.start)
 async def choose_doctor(message: Message, state: FSMContext):
-    await state.update_data(patient=message.text)
+    await state.update_data(operation_time=message.text)
     await state.set_state(Steps.doctors)
     await message.answer('Укажите кому из врачей отправить снимки', reply_markup=choose_doctors)
 
@@ -46,14 +48,16 @@ async def send_image(message: Message, state: FSMContext):
             await bot.send_photo(
                 chat_id=os.getenv('GROUP_ID'),
                 photo=message.photo[-1].file_id,
-                caption=f'{data["doctor"]}, Вам сообщение от {message.from_user.username}\nПациент: {data["patient"]}',
+                caption=f'{data["doctor"]}, Вам сообщение от {message.from_user.username}\n'
+                        f'Срок операции: {data["operation_time"]}',
                 reply_markup=image_answers(message.from_user.id).as_markup()
             )
         else:
             await bot.send_photo(
                 chat_id=os.getenv('GROUP_ID'),
                 photo=message.photo[-1].file_id,
-                caption=f'Доктора, вам сообщение от {message.from_user.username}\nПациент: {data["patient"]}',
+                caption=f'Доктора, вам сообщение от {message.from_user.username}\n'
+                        f'Срок операции: {data["operation_time"]}',
                 reply_markup=image_answers(message.from_user.id).as_markup()
             )
         await message.reply('Ваше сообщение переслано')
@@ -68,9 +72,9 @@ async def answer_1(callback: CallbackQuery):
     user_id = callback.data.split(':')[1]
     await bot.send_message(user_id, text='На контрольных рентгенограммах наблюдается достаточная '
                                          'консолидация(сращение перелома), поэтому возможно удаление металлоконструкции'
-                                         'в плановом порядке\nЗапись на плановую госпитализацию проводится по телефону '
+                                         ' в плановом порядке\nЗапись на плановую госпитализацию проводится по телефону '
                                          '83952218974 по понедельникам с 13.00 до 14.00.\nТакже можно оставить заявку на'
-                                         'плановую госпитализацию в личном кабинете портала ОГАУЗ ГИМДКБ',
+                                         ' плановую госпитализацию в личном кабинете портала ОГАУЗ ГИМДКБ',
                            reply_markup=get_personal_account().as_markup())
     await callback.message.answer('Отправлен ответ, что консолидация достаточная и возможна плановая госпитализация'
                                   '(вариант 1)')
