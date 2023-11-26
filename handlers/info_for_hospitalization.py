@@ -39,5 +39,6 @@ async def send_hospitalization_info(message: Message):
                          '5. Справка о вакцинации против КОРИ.\n'
                          'http://xn--90aflji.xn--p1ai/travmatologicheskoye'
                          )
-    await message.answer('Запись на плановую госпитализацию проводится по телефону 83952218974 по понедельникам с 13.00'
-                         ' до 14.00.\nТакже с нами можно связаться по электронной почте travmaimdkb@mail.ru')
+    await message.answer('Запись на плановую госпитализацию в личном кабинете портала ОГАУЗ ГИМДКБ '
+                         '(http://xn--90aflji.xn--p1ai/f/instrukciya_dlya_zapisi_na_planovuyu_gospitalizaciyu_v_travmatologo.pdf)\n'
+                         'Также с нами можно связаться по электронной почте travmaimdkb@mail.ru')
