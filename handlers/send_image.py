@@ -73,7 +73,8 @@ async def answer_1(callback: CallbackQuery):
     await bot.send_message(user_id, text='На контрольных рентгенограммах наблюдается достаточная '
                                          'консолидация(сращение перелома), поэтому возможно удаление металлоконструкции'
                                          ' в плановом порядке\nЗапись на плановую госпитализацию в личном кабинете '
-                                         'портала ОГАУЗ ГИМДКБ (http://xn--90aflji.xn--p1ai/f/instrukciya_dlya_zapisi_na_planovuyu_gospitalizaciyu_v_travmatologo.pdf)',
+                                         'портала ОГАУЗ ГИМДКБ (https://imdkb.mzio.ru/)\n'
+                                         'Подробная инструкция - http://xn--90aflji.xn--p1ai/f/instrukciya_dlya_zapisi_na_planovuyu_gospitalizaciyu_v_travmatologo.pdf',
                            reply_markup=get_personal_account().as_markup())
     await callback.message.answer('Отправлен ответ, что консолидация достаточная и возможна плановая госпитализация'
                                   '(вариант 1)')
