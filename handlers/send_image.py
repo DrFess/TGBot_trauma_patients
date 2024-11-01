@@ -50,11 +50,11 @@ async def send_image(message: Message, state: FSMContext):
     doctors_id = read_json('doctors_id.json')
     data = await state.get_data()
     if message.photo:
-        if data['doctor'] != 'Любому врачу':
+        if data['doctor'] == 'Любому врачу':
             await bot.send_photo(
                 chat_id=os.getenv('GROUP_ID'),
                 photo=message.photo[-1].file_id,
-                caption=f'{data["doctor"]}, Вам сообщение от {message.from_user.username}\n'
+                caption=f'Доктора, вам сообщение от {message.from_user.username}\n'
                         f'Срок операции: {data["operation_time"]}',
                 reply_markup=image_answers(message.from_user.id).as_markup()
             )
@@ -63,7 +63,7 @@ async def send_image(message: Message, state: FSMContext):
             await bot.send_photo(
                 chat_id=doctors_id.get(doctor),
                 photo=message.photo[-1].file_id,
-                caption=f'Доктора, вам сообщение от {message.from_user.username}\n'
+                caption=f'Вам сообщение от {message.from_user.username}\n'
                         f'Срок операции: {data["operation_time"]}',
                 reply_markup=image_answers(message.from_user.id).as_markup()
             )
