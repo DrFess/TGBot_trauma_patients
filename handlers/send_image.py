@@ -118,5 +118,5 @@ async def send_answer(message: Message, state: FSMContext):
     who_send_answer = data.get('user_id')
     text_answer = message.text
     await bot.send_message(who_send_answer, text=text_answer)
-    await message.answer('Ваше сообщение переслано!')
+    await message.answer('Ваше сообщение переслано.')
     await state.clear()
