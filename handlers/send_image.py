@@ -8,6 +8,7 @@ from aiogram.fsm.state import StatesGroup, State
 
 from bot import bot
 from keyboards.buttons import choose_doctors, image_answers, get_personal_account
+from utils import read_json
 
 router = Router()
 
@@ -16,6 +17,10 @@ class Steps(StatesGroup):
     start = State()
     doctors = State()
     end = State()
+
+
+class AnswerMessage(StatesGroup):
+    start = State()
 
 
 @router.message(Text(text='Отправить рентгенологические снимки'))
@@ -42,6 +47,7 @@ async def choose_format(message: Message, state: FSMContext):
 
 @router.message(Steps.end)
 async def send_image(message: Message, state: FSMContext):
+    doctors_id = read_json('doctors_id.json')
     data = await state.get_data()
     if message.photo:
         if data['doctor'] != 'Любому врачу':
@@ -53,8 +59,9 @@ async def send_image(message: Message, state: FSMContext):
                 reply_markup=image_answers(message.from_user.id).as_markup()
             )
         else:
+            doctor = data.get('doctor')
             await bot.send_photo(
-                chat_id=os.getenv('GROUP_ID'),
+                chat_id=doctors_id.get(doctor),
                 photo=message.photo[-1].file_id,
                 caption=f'Доктора, вам сообщение от {message.from_user.username}\n'
                         f'Срок операции: {data["operation_time"]}',
@@ -95,3 +102,21 @@ async def answer_3(callback: CallbackQuery):
     await bot.send_message(user_id, text='Необходимо уточнить некоторые детали. Перезвоните по телефону 83952218974 '
                                          'в рабочие дни с 14.00 до 15.00')
     await callback.message.answer('Отправлен ответ, что необходимо перезвонить (вариант 3)')
+
+
+@router.callback_query(Text(startswith='answer_4'))
+async def answer_4(callback: CallbackQuery, state: FSMContext):
+    await state.set_state(AnswerMessage.start)
+    user_id = callback.data.split(':')[1]
+    await state.update_data(user_id=user_id)
+    await callback.message.answer('Пришли мне текст сообщения, которое нужно переслать в ответ')
+
+
+@router.message(AnswerMessage.start)
+async def send_answer(message: Message, state: FSMContext):
+    data = await state.get_data()
+    who_send_answer = data.get('user_id')
+    text_answer = message.text
+    await bot.send_message(who_send_answer, text=text_answer)
+    await message.answer('Ваше сообщение переслано')
+    await state.clear()
