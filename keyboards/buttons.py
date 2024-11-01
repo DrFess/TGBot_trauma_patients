@@ -28,6 +28,8 @@ choose_doctors_buttons = [
     [KeyboardButton(text='Дегтярев А.А.')],
     [KeyboardButton(text='Зеленин И.В.')],
     [KeyboardButton(text='Остапенко В.Г.')],
+    [KeyboardButton(text='Казанцев А.В.')],
+    [KeyboardButton(text='Преториус Т.Л.')],
     [KeyboardButton(text='Любому врачу')]
 ]
 choose_doctors = ReplyKeyboardMarkup(keyboard=choose_doctors_buttons, one_time_keyboard=True, resize_keyboard=True)
