@@ -7,7 +7,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
 from bot import bot
-from keyboards.buttons import choose_doctors, image_answers, get_personal_account
+from keyboards.buttons import choose_doctors, image_answers, get_personal_account, image_answers_only_doctor
 from utils import read_json
 
 router = Router()
@@ -65,9 +65,9 @@ async def send_image(message: Message, state: FSMContext):
                 photo=message.photo[-1].file_id,
                 caption=f'Вам сообщение от {message.from_user.username}\n'
                         f'Срок операции: {data["operation_time"]}',
-                reply_markup=image_answers(message.from_user.id).as_markup()
+                reply_markup=image_answers_only_doctor(message.from_user.id).as_markup()
             )
-        await message.reply('Ваше сообщение переслано')
+        await message.reply('Ваше сообщение доставлено. Ожидайте, сообщение доктора пришлю Вам, как только он ответит')
         await state.clear()
     else:
         await message.answer('Возникла ошибка. Попробуем снова?')

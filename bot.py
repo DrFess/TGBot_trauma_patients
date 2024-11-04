@@ -10,6 +10,7 @@ from aiogram.types import Message
 
 from handlers import info_for_hospitalization, send_image
 from keyboards.buttons import menu
+from utils import read_json
 
 bot = Bot(token=os.getenv('TOKEN'), parse_mode="HTML")
 router = Router()
@@ -17,10 +18,18 @@ router = Router()
 
 @router.message(Command(commands=["start", "menu"]))
 async def command_start_handler(message: Message):
-    await message.answer(
-        f"Привет {message.from_user.username}, это помощник врачей отделения травматологии ОГАУЗ ГИМДКБ",
-        reply_markup=menu
-    )
+    doctors_id = read_json('doctors_id.json')
+    if message.from_user.id in doctors_id.values():
+        await message.answer(
+            f"Спасибо, что пользуетесь нашим ботом. Предложения по улучшению или замечания адресовать @DrFess"
+        )
+    else:
+        await message.answer(
+            f"Привет {message.from_user.username}, это помощник врачей отделения травматологии ОГАУЗ ГИМДКБ. "
+            f"Чтобы отправить снимки, нажмите на кнопку Отправить рентгенологические снимки, затем выберите врача "
+            f"или укажите Любому врачу",
+            reply_markup=menu
+        )
 
 
 async def main():
